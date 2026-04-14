@@ -92,6 +92,24 @@ export const api = {
     deleteAPIKey: (id: string) =>
         request<any>(`/api/settings/api-keys/${id}`, { method: 'DELETE' }),
 
+    // Security Analysis
+    adversarialProbe: (prompt_text: string) =>
+        request<any>('/api/security/adversarial-probe', { method: 'POST', body: JSON.stringify({ prompt_text }) }),
+
+    promptDiff: (prompt_text: string) =>
+        request<any>('/api/security/prompt-diff', { method: 'POST', body: JSON.stringify({ prompt_text }) }),
+
+    consistencyScore: (prompt_text: string) =>
+        request<any>('/api/security/consistency-score', { method: 'POST', body: JSON.stringify({ prompt_text }) }),
+
+    threatModel: (prompt_text: string) =>
+        request<any>('/api/security/threat-model', { method: 'POST', body: JSON.stringify({ prompt_text }) }),
+
+    cveScan: (prompt_text: string) =>
+        request<any>('/api/security/cve-scan', { method: 'POST', body: JSON.stringify({ prompt_text }) }),
+
+    getCveDatabase: () => request<any>('/api/security/cve-database'),
+
     // Health
     health: () => request<any>('/api/health'),
 };

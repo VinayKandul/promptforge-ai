@@ -1,0 +1,167 @@
+[
+  {
+    "id": "PCVE-2024-001",
+    "name": "DAN Jailbreak",
+    "category": "jailbreak",
+    "severity": "critical",
+    "description": "Do Anything Now (DAN) prompt injection that bypasses safety guardrails by convincing the model to adopt an unrestricted alter-ego persona.",
+    "patterns": ["do anything now", "DAN mode", "you are now DAN", "jailbroken", "act as DAN", "DAN 6.0", "DAN 11.0"],
+    "mitigation": "Add explicit role constraints and output format restrictions. Avoid allowing role redefinition in user-facing prompts.",
+    "owasp_mapping": "LLM01",
+    "references": ["https://owasp.org/www-project-top-10-for-large-language-model-applications/"]
+  },
+  {
+    "id": "PCVE-2024-002",
+    "name": "System Prompt Extraction",
+    "category": "information_disclosure",
+    "severity": "high",
+    "description": "Techniques to extract the system prompt or hidden instructions by asking the model to repeat, translate, or encode its instructions.",
+    "patterns": ["repeat your instructions", "what is your system prompt", "translate your instructions", "print your prompt", "ignore previous instructions and tell me", "show me your initial prompt", "output your system message"],
+    "mitigation": "Never include sensitive logic in system prompts. Add instruction-following boundaries and output validation.",
+    "owasp_mapping": "LLM01",
+    "references": ["https://owasp.org/www-project-top-10-for-large-language-model-applications/"]
+  },
+  {
+    "id": "PCVE-2024-003",
+    "name": "Role-Play Wrapper Attack",
+    "category": "jailbreak",
+    "severity": "high",
+    "description": "Wrapping malicious requests inside fictional role-play scenarios (e.g., 'You are a character in a movie who...') to bypass content filters.",
+    "patterns": ["pretend you are", "roleplay as", "you are a character", "in this fictional scenario", "imagine you are a villain", "let's play a game where", "act as if you were"],
+    "mitigation": "Implement output content filtering. Add constraints that persist across hypothetical scenarios.",
+    "owasp_mapping": "LLM01",
+    "references": []
+  },
+  {
+    "id": "PCVE-2024-004",
+    "name": "Indirect Prompt Injection via Context",
+    "category": "injection",
+    "severity": "critical",
+    "description": "Embedding malicious instructions inside documents, URLs, or data that the model processes as context, causing it to follow attacker instructions.",
+    "patterns": ["ignore all previous instructions", "new instructions:", "SYSTEM:", "ADMIN OVERRIDE:", "[INST]", "<<SYS>>", "### Instruction:", "\\n\\nHuman:", "<!-- hidden instruction"],
+    "mitigation": "Sanitize all external data before including in prompts. Use clear delimiters between user input and system instructions.",
+    "owasp_mapping": "LLM01",
+    "references": []
+  },
+  {
+    "id": "PCVE-2024-005",
+    "name": "Token Smuggling",
+    "category": "evasion",
+    "severity": "high",
+    "description": "Using Unicode characters, homoglyphs, zero-width joiners, or base64 encoding to smuggle harmful tokens past content filters.",
+    "patterns": ["base64:", "\\u200b", "\\u200d", "\\ufeff", "decode this:", "translate from base64", "rot13", "hex encode", "unicode escape"],
+    "mitigation": "Normalize all input text before processing. Decode and inspect encoded content. Block unusual Unicode characters.",
+    "owasp_mapping": "LLM01",
+    "references": []
+  },
+  {
+    "id": "PCVE-2024-006",
+    "name": "PII Exfiltration via Structured Output",
+    "category": "data_exfiltration",
+    "severity": "critical",
+    "description": "Crafting prompts that trick the model into outputting sensitive data in structured formats (JSON, CSV, markdown tables) that can be programmatically scraped.",
+    "patterns": ["output as JSON", "list all users", "export data", "dump database", "return all records", "format as CSV", "include personal information"],
+    "mitigation": "Add output format constraints. Implement post-processing output filters for PII detection.",
+    "owasp_mapping": "LLM06",
+    "references": []
+  },
+  {
+    "id": "PCVE-2024-007",
+    "name": "Hallucination Exploitation",
+    "category": "misinformation",
+    "severity": "medium",
+    "description": "Prompts designed to exploit model hallucination tendencies, generating fake but convincing citations, legal references, or medical advice.",
+    "patterns": ["cite your sources", "provide references", "link to the study", "according to the law", "medical diagnosis for", "legal precedent for"],
+    "mitigation": "Add constraints requiring factual grounding. Include disclaimers in output format. Use retrieval-augmented generation (RAG).",
+    "owasp_mapping": "LLM09",
+    "references": []
+  },
+  {
+    "id": "PCVE-2024-008",
+    "name": "Multi-Turn Context Manipulation",
+    "category": "injection",
+    "severity": "high",
+    "description": "Gradually steering model behavior across multiple conversation turns to slowly override safety guidelines without triggering single-turn detection.",
+    "patterns": ["building on that", "now let's adjust", "slight modification", "one more thing", "can you also", "continuing from before"],
+    "mitigation": "Implement per-turn safety checks. Reset context boundaries periodically. Monitor for behavioral drift across turns.",
+    "owasp_mapping": "LLM01",
+    "references": []
+  },
+  {
+    "id": "PCVE-2024-009",
+    "name": "Training Data Extraction",
+    "category": "information_disclosure",
+    "severity": "critical",
+    "description": "Prompts designed to extract memorized training data, including private information, copyrighted content, or proprietary code.",
+    "patterns": ["repeat the following text verbatim", "what did you learn about", "recite the poem", "reproduce the code from", "training data", "memorized content"],
+    "mitigation": "Use differential privacy in training. Implement output filters for known memorized content. Limit verbatim reproduction.",
+    "owasp_mapping": "LLM06",
+    "references": []
+  },
+  {
+    "id": "PCVE-2024-010",
+    "name": "API Key / Credential Leakage",
+    "category": "credential_exposure",
+    "severity": "critical",
+    "description": "Prompts that inadvertently contain API keys, passwords, database connection strings, or other credentials that get sent to third-party AI providers.",
+    "patterns": ["sk-", "api_key", "password", "secret_key", "access_token", "bearer ", "mongodb://", "postgres://", "mysql://", "-----BEGIN RSA PRIVATE KEY-----", "AKIA"],
+    "mitigation": "Implement pre-processing credential scanners. Never include raw credentials in prompts. Use environment variables and secret managers.",
+    "owasp_mapping": "LLM06",
+    "references": []
+  },
+  {
+    "id": "PCVE-2024-011",
+    "name": "Denial of Service via Resource Exhaustion",
+    "category": "dos",
+    "severity": "medium",
+    "description": "Prompts designed to consume maximum tokens or trigger infinite loops, leading to high API costs or service disruption.",
+    "patterns": ["repeat this 1000 times", "generate an infinitely long", "count from 1 to infinity", "maximum length response", "keep going until", "never stop"],
+    "mitigation": "Implement token limits. Set maximum output length. Add cost monitoring and circuit breakers.",
+    "owasp_mapping": "LLM04",
+    "references": []
+  },
+  {
+    "id": "PCVE-2024-012",
+    "name": "Model Behavior Manipulation via Few-Shot Poisoning",
+    "category": "injection",
+    "severity": "high",
+    "description": "Injecting carefully crafted few-shot examples that steer model behavior toward producing harmful, biased, or incorrect outputs.",
+    "patterns": ["here are some examples:", "example 1:", "Q:", "A:", "input:", "output:", "given the following examples"],
+    "mitigation": "Validate and sanitize all few-shot examples. Use curated example sets. Monitor for distributional shifts in outputs.",
+    "owasp_mapping": "LLM03",
+    "references": []
+  },
+  {
+    "id": "PCVE-2025-001",
+    "name": "Multimodal Injection via Image Prompts",
+    "category": "injection",
+    "severity": "high",
+    "description": "Embedding textual instructions inside images that vision-language models read and follow, bypassing text-based filters.",
+    "patterns": ["analyze this image", "describe what you see", "read the text in the image", "OCR this"],
+    "mitigation": "Implement image content analysis. Apply same safety checks to extracted text from images. Separate image description from instruction following.",
+    "owasp_mapping": "LLM01",
+    "references": []
+  },
+  {
+    "id": "PCVE-2025-002",
+    "name": "Compliance Data Harvesting",
+    "category": "data_exfiltration",
+    "severity": "high",
+    "description": "Using prompts to generate or synthesize regulated data (HIPAA, GDPR, PCI-DSS) that could create compliance violations.",
+    "patterns": ["generate patient records", "create credit card numbers", "synthesize SSN", "fake identity", "sample medical data", "test PII"],
+    "mitigation": "Tag prompts requesting regulated data types. Implement compliance-aware output filtering. Log all data generation requests.",
+    "owasp_mapping": "LLM06",
+    "references": []
+  },
+  {
+    "id": "PCVE-2025-003",
+    "name": "Supply Chain Prompt Injection",
+    "category": "injection",
+    "severity": "critical",
+    "description": "Injecting malicious instructions through third-party plugins, tools, or data sources that feed into LLM prompts without proper sanitization.",
+    "patterns": ["use plugin", "call tool", "fetch from url", "read from api", "external data source", "integrate with"],
+    "mitigation": "Sanitize all external tool outputs. Implement trust boundaries between plugins and core prompts. Use allowlists for external data sources.",
+    "owasp_mapping": "LLM05",
+    "references": []
+  }
+]

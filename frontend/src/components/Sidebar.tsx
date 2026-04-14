@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/auth';
 const NAV_ITEMS = [
     { href: '/dashboard', icon: '⚡', label: 'Forge Prompt' },
     { href: '/debugger', icon: '🔧', label: 'Debugger' },
+    { href: '/security', icon: '🔒', label: 'Security Suite' },
     { href: '/history', icon: '📜', label: 'History' },
     { href: '/library', icon: '📚', label: 'Library' },
     { href: '/workflows', icon: '🔄', label: 'Workflows' },

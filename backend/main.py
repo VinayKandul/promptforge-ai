@@ -10,6 +10,7 @@ from config import CORS_ORIGINS, RATE_LIMIT
 from database import init_db
 from api.auth import router as auth_router
 from api.routes import router as api_router
+from api.security_routes import router as security_router
 
 # Rate limiter
 limiter = Limiter(key_func=get_remote_address, default_limits=[RATE_LIMIT])
@@ -50,6 +51,7 @@ async def add_security_headers(request: Request, call_next):
 # Routes
 app.include_router(auth_router)
 app.include_router(api_router)
+app.include_router(security_router)
 
 
 @app.on_event("startup")
